@@ -1,94 +1,92 @@
 import type { CaseMetric } from "@/types/case";
 
 export type CaseCardProps = {
+  /** Порядковый номер для фона «01», «02»… */
+  index: number;
   title: string;
   category: string;
   country: string;
   metrics: CaseMetric[];
   description: string;
+  /** Эмодзи в квадрате слева, как в эталоне */
+  logoEmoji?: string;
 };
 
+function formatCaseIndex(n: number) {
+  return String(n).padStart(2, "0");
+}
+
 /**
- * Премиальная карточка кейса: glow, lift, scale, золотая обводка при hover.
+ * Кейс 1:1 по эталону Claude: фон --bg, сетка без скруглений карточки,
+ * верхняя золотая полоса scaleX при hover, крупный номер, теги, метрики display.
  */
 export default function CaseCard({
+  index,
   title,
   category,
   country,
   metrics,
   description,
+  logoEmoji = "📊",
 }: CaseCardProps) {
   return (
-    <div className="group relative cursor-pointer pb-2">
-      {/* Мягкий blur-glow под карточкой */}
+    <article
+      className="group relative overflow-hidden bg-[var(--bg)] p-8 transition-[background-color] duration-[250ms] ease-[cubic-bezier(0.4,0,0.2,1)] hover:bg-[rgba(200,169,110,0.03)] md:p-10"
+    >
+      {/* Верхняя акцентная линия — как .case-card::before */}
       <div
-        className="pointer-events-none absolute inset-x-6 top-1/2 h-24 -translate-y-1/4 rounded-[2rem] bg-[#d4af37]/20 blur-2xl opacity-0 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:blur-3xl"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[3px] origin-left scale-x-0 bg-[var(--accent)] transition-transform duration-500 ease-out group-hover:scale-x-100"
         aria-hidden
       />
 
-      <article
-        className="relative overflow-hidden rounded-2xl border border-white/5 bg-[#0b0b0b] p-6 shadow-none transition-all duration-300 ease-out group-hover:-translate-y-2 group-hover:scale-[1.02] group-hover:border-[#d4af37] group-hover:shadow-2xl md:p-8"
+      <div
+        className="pointer-events-none absolute right-8 top-5 font-[family-name:var(--font-display)] text-[64px] leading-none text-[rgba(200,169,110,0.08)]"
+        aria-hidden
       >
-        {/* Внутренний radial glow */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.15), transparent 70%)",
-          }}
-          aria-hidden
-        />
+        {formatCaseIndex(index)}
+      </div>
 
-        <div className="relative z-10">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-              <span className="text-white/70">{category}</span>
-              <span className="mx-2 text-white/25">·</span>
-              <span>{country}</span>
-            </p>
-            <span
-              className="inline-flex size-9 items-center justify-center rounded-lg border border-white/10 text-white/40 transition-all duration-300 ease-out group-hover:border-[#d4af37]/40 group-hover:text-[#d4af37]"
-              aria-hidden
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                className="transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              >
-                <path d="M7 17 17 7M9 7h8v8" />
-              </svg>
-            </span>
+      <div className="relative z-[1]">
+        <div className="mb-5 flex items-start gap-4">
+          <div
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-sm border border-[var(--border)] bg-[var(--surface-2)] text-lg"
+            aria-hidden
+          >
+            {logoEmoji}
           </div>
-
-          <h3 className="mt-5 text-xl font-semibold leading-snug text-white transition-colors duration-300 ease-out group-hover:text-[#d4af37] md:text-2xl">
-            {title}
-          </h3>
-
-          {metrics.length > 0 ? (
-            <div className="mt-6 flex flex-wrap gap-6 md:gap-8">
-              {metrics.map((metric, index) => (
-                <div key={`${metric.value}-${index}`} className="min-w-0">
-                  <p className="metric text-3xl font-semibold tracking-tight text-white transition-all duration-300 ease-out group-hover:scale-110 group-hover:text-[#d4af37] md:text-4xl">
-                    {metric.value}
-                  </p>
-                  {metric.label ? (
-                    <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.14em] text-white/40">
-                      {metric.label}
-                    </p>
-                  ) : null}
-                </div>
-              ))}
+          <div className="min-w-0 pt-0.5">
+            <div className="flex flex-wrap gap-1.5">
+              <span className="inline-block rounded-sm bg-[rgba(200,169,110,0.1)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--accent)]">
+                {category}
+              </span>
+              <span className="inline-block rounded-sm bg-[rgba(200,169,110,0.1)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--accent)]">
+                {country}
+              </span>
             </div>
-          ) : null}
-
-          <p className="mt-6 text-sm leading-relaxed text-white/60 md:text-base">{description}</p>
+          </div>
         </div>
-      </article>
-    </div>
+
+        <h3 className="mb-5 text-[20px] font-bold leading-snug text-[var(--text)]">{title}</h3>
+
+        {metrics.length > 0 ? (
+          <div className="mb-5 flex flex-wrap gap-6">
+            {metrics.map((metric, i) => (
+              <div key={`${metric.value}-${i}`} className="min-w-0">
+                <div className="font-[family-name:var(--font-display)] text-[36px] leading-none tracking-tight text-[var(--accent)]">
+                  {metric.value}
+                </div>
+                {metric.label ? (
+                  <div className="mt-1 text-[11px] uppercase tracking-[0.06em] text-[var(--muted)]">
+                    {metric.label}
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        <p className="text-sm leading-[1.7] text-[var(--muted)]">{description}</p>
+      </div>
+    </article>
   );
 }
