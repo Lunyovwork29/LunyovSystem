@@ -1,13 +1,11 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { MOCK_CASES } from "@/data/cases.mock";
+import type { CaseItem } from "@/types/case";
 
-export type CaseItem = {
-  id: string;
-  niche: string;
-  result: string;
-  points: string[];
-};
+export type { CaseItem } from "@/types/case";
+export type { CaseMetric } from "@/types/case";
 
 export type ArticleItem = {
   id: string;
@@ -31,41 +29,9 @@ type ContentContextType = {
   deleteArticle: (id: string) => void;
 };
 
-const STORAGE_CASES = "lunev_cases_v1";
+const STORAGE_CASES_V2 = "lunev_cases_v2";
+const STORAGE_CASES_V1 = "lunev_cases_v1";
 const STORAGE_ARTICLES = "lunev_articles_v1";
-
-const defaultCases: CaseItem[] = [
-  {
-    id: "case-1",
-    niche: "Мужская клиника",
-    result: "+3.2 млн ₸ за месяц",
-    points: [
-      "Внедрили скрипты продаж",
-      "Сократили время ответа с 40 минут до 5 минут",
-      "Настроили контроль менеджеров",
-    ],
-  },
-  {
-    id: "case-2",
-    niche: "Онлайн-магазин",
-    result: "x2 рост конверсии",
-    points: [
-      "Переписали воронку продаж",
-      "Внедрили CRM и контроль заявок",
-      "Убрали слив клиентов",
-    ],
-  },
-  {
-    id: "case-3",
-    niche: "Услуги (B2C)",
-    result: "+70% к выручке",
-    points: [
-      "Построили отдел продаж с нуля",
-      "Ввели KPI и систему контроля",
-      "Настроили обучение менеджеров",
-    ],
-  },
-];
 
 const defaultArticles: ArticleItem[] = [
   {
@@ -97,17 +63,76 @@ function parseStorage<T>(key: string, fallback: T): T {
   }
 }
 
-export function ContentProvider({ children }: { children: React.ReactNode }) {
-  const [cases, setCases] = useState<CaseItem[]>(() => parseStorage(STORAGE_CASES, defaultCases));
-  const [articles, setArticles] = useState<ArticleItem[]>(() =>
-    parseStorage(STORAGE_ARTICLES, defaultArticles)
+type LegacyCaseV1 = {
+  id: string;
+  niche?: string;
+  result?: string;
+  points?: string[];
+};
+
+function isCaseItemV2(item: unknown): item is CaseItem {
+  if (!item || typeof item !== "object") return false;
+  const o = item as Record<string, unknown>;
+  return (
+    typeof o.id === "string" &&
+    typeof o.title === "string" &&
+    typeof o.category === "string" &&
+    typeof o.country === "string" &&
+    typeof o.description === "string" &&
+    Array.isArray(o.metrics)
   );
+}
+
+function migrateFromV1(raw: LegacyCaseV1): CaseItem {
+  const niche = raw.niche ?? "Кейс";
+  const result = raw.result ?? "—";
+  const pointsText =
+    Array.isArray(raw.points) && raw.points.length > 0 ? raw.points.join(" ") : "";
+
+  return {
+    id: raw.id || crypto.randomUUID(),
+    title: niche,
+    category: niche,
+    country: "Казахстан",
+    metrics: [{ value: result, label: "результат" }],
+    description: pointsText,
+  };
+}
+
+function normalizeStoredCases(): CaseItem[] {
+  const v2 = parseStorage<unknown[] | null>(STORAGE_CASES_V2, null);
+  if (Array.isArray(v2) && v2.length > 0) {
+    const parsed = v2.filter(isCaseItemV2);
+    if (parsed.length > 0) return parsed;
+  }
+
+  const v1 = parseStorage<LegacyCaseV1[] | null>(STORAGE_CASES_V1, null);
+  if (Array.isArray(v1) && v1.length > 0) {
+    return v1.map(migrateFromV1);
+  }
+
+  return MOCK_CASES;
+}
+
+export function ContentProvider({ children }: { children: React.ReactNode }) {
+  const [cases, setCases] = useState<CaseItem[]>(MOCK_CASES);
+  const [articles, setArticles] = useState<ArticleItem[]>(defaultArticles);
+  const [storageReady, setStorageReady] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_CASES, JSON.stringify(cases));
+    /* Intentional: read persisted content only on the client after SSR — see https://nextjs.org/docs/app/building-your-application/rendering/client-components#using-local-storage */
+    /* eslint-disable react-hooks/set-state-in-effect */
+    setCases(normalizeStoredCases());
+    setArticles(parseStorage(STORAGE_ARTICLES, defaultArticles));
+    setStorageReady(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, []);
+
+  useEffect(() => {
+    if (storageReady && typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_CASES_V2, JSON.stringify(cases));
     }
-  }, [cases]);
+  }, [cases, storageReady]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

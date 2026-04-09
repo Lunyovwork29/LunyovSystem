@@ -7,9 +7,11 @@ const ADMIN_LOGIN = "admin";
 const ADMIN_PASSWORD = "1234";
 
 type CaseDraft = {
-  niche: string;
-  result: string;
-  pointsRaw: string;
+  title: string;
+  category: string;
+  country: string;
+  description: string;
+  metricsRaw: string;
 };
 
 type ArticleDraft = {
@@ -18,14 +20,29 @@ type ArticleDraft = {
   body: string;
 };
 
-const emptyCaseDraft: CaseDraft = { niche: "", result: "", pointsRaw: "" };
+const emptyCaseDraft: CaseDraft = {
+  title: "",
+  category: "",
+  country: "",
+  description: "",
+  metricsRaw: "",
+};
 const emptyArticleDraft: ArticleDraft = { title: "", excerpt: "", body: "" };
 
-function parsePoints(raw: string) {
+function parseMetrics(raw: string) {
   return raw
     .split("\n")
-    .map((item) => item.trim())
-    .filter(Boolean);
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const colon = line.indexOf(":");
+      if (colon > 0) {
+        const label = line.slice(0, colon).trim();
+        const value = line.slice(colon + 1).trim();
+        return { label, value };
+      }
+      return { value: line };
+    });
 }
 
 export default function AdminPanel() {
@@ -67,17 +84,29 @@ export default function AdminPanel() {
     const item = cases.find((entry) => entry.id === id);
     if (!item) return;
     setEditingCaseId(id);
-    setCaseDraft({ niche: item.niche, result: item.result, pointsRaw: item.points.join("\n") });
+    const metricsRaw = item.metrics
+      .map((m) => (m.label ? `${m.label}: ${m.value}` : m.value))
+      .join("\n");
+    setCaseDraft({
+      title: item.title,
+      category: item.category,
+      country: item.country,
+      description: item.description,
+      metricsRaw,
+    });
   };
 
   const submitCase = (event: FormEvent) => {
     event.preventDefault();
+    const metrics = parseMetrics(caseDraft.metricsRaw);
     const payload = {
-      niche: caseDraft.niche.trim(),
-      result: caseDraft.result.trim(),
-      points: parsePoints(caseDraft.pointsRaw),
+      title: caseDraft.title.trim(),
+      category: caseDraft.category.trim(),
+      country: caseDraft.country.trim(),
+      description: caseDraft.description.trim(),
+      metrics,
     };
-    if (!payload.niche || !payload.result || payload.points.length === 0) return;
+    if (!payload.title || !payload.category || !payload.country || metrics.length === 0) return;
 
     if (editingCaseId) {
       updateCase(editingCaseId, payload);
@@ -168,21 +197,33 @@ export default function AdminPanel() {
                 <form onSubmit={submitCase} className="mt-5 grid gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] p-5">
                   <input
                     className="input-premium"
-                    placeholder="Ниша"
-                    value={caseDraft.niche}
-                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, niche: event.target.value }))}
+                    placeholder="Заголовок кейса"
+                    value={caseDraft.title}
+                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, title: event.target.value }))}
                   />
                   <input
                     className="input-premium"
-                    placeholder="Результат"
-                    value={caseDraft.result}
-                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, result: event.target.value }))}
+                    placeholder="Категория / ниша"
+                    value={caseDraft.category}
+                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, category: event.target.value }))}
+                  />
+                  <input
+                    className="input-premium"
+                    placeholder="Страна"
+                    value={caseDraft.country}
+                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, country: event.target.value }))}
                   />
                   <textarea
                     className="input-premium"
-                    placeholder="Пункты, каждый с новой строки"
-                    value={caseDraft.pointsRaw}
-                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, pointsRaw: event.target.value }))}
+                    placeholder="Метрики: строка — значение (×1.8) или подпись: значение (рост: +35%)"
+                    value={caseDraft.metricsRaw}
+                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, metricsRaw: event.target.value }))}
+                  />
+                  <textarea
+                    className="input-premium"
+                    placeholder="Краткое описание результата"
+                    value={caseDraft.description}
+                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, description: event.target.value }))}
                   />
                   <div className="flex gap-3">
                     <button className="btn-primary px-4 py-2 text-xs" type="submit">
@@ -207,8 +248,10 @@ export default function AdminPanel() {
                   {cases.map((item) => (
                     <div key={item.id} className="card-premium flex items-center justify-between p-4">
                       <div>
-                        <p className="font-semibold">{item.niche}</p>
-                        <p className="text-sm text-[var(--muted)]">{item.result}</p>
+                        <p className="font-semibold">{item.title}</p>
+                        <p className="text-sm text-[var(--muted)]">
+                          {item.category} · {item.country}
+                        </p>
                       </div>
                       <div className="flex gap-2">
                         <button type="button" className="btn-secondary px-3 py-2 text-xs" onClick={() => startEditCase(item.id)}>
