@@ -11,9 +11,12 @@ const navItems = [
 export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-[var(--border)]/60 bg-[rgba(6,6,6,0.88)] backdrop-blur-xl supports-[backdrop-filter]:bg-[rgba(6,6,6,0.82)]">
-      <nav className="container-site flex h-[72px] items-center justify-between md:h-20">
-        <a href="#hero" className="group outline-none transition-opacity hover:opacity-90">
-          <span className="relative block h-9 w-[min(100%,200px)] shrink-0 md:h-11 md:w-[220px]">
+      <nav className="container-site relative flex h-[72px] items-center justify-between md:h-20">
+        <a
+          href="#hero"
+          className="group relative z-10 shrink-0 outline-none transition-opacity hover:opacity-90"
+        >
+          <span className="relative block h-9 w-[min(100%,200px)] md:h-11 md:w-[220px]">
             <Image
               src="/brand-logo.png"
               alt="Lunyov System"
@@ -24,19 +27,19 @@ export default function Navbar() {
           </span>
         </a>
 
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="pointer-events-none absolute left-1/2 top-1/2 z-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex md:items-center md:gap-8">
           {navItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="nav-link-premium text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]"
+              className="pointer-events-auto nav-link-premium text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--muted)]"
             >
               {item.label}
             </a>
           ))}
         </div>
 
-        <a href="#contact" className="btn-primary nav-cta-btn">
+        <a href="#contact" className="btn-primary nav-cta-btn relative z-10 shrink-0">
           Заявка
         </a>
       </nav>
