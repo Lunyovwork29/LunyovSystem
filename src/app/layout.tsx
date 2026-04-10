@@ -15,7 +15,7 @@ const displayFont = Sora({
   weight: ["400", "600", "700", "800"],
 });
 
-/* Иконка вкладки: `src/app/icon.png` и `apple-icon.png` (копия логотипа) — Next подставляет сам */
+const ICON_CACHE = "6";
 
 export const metadata: Metadata = {
   title: {
@@ -24,6 +24,15 @@ export const metadata: Metadata = {
   },
   description:
     "Системные отделы продаж, внедрение CRM (amo, Kommo, Bitrix), контроль и рост выручки без хаоса.",
+  icons: {
+    icon: [
+      { url: `/icon.png?v=${ICON_CACHE}`, type: "image/png", sizes: "32x32" },
+      { url: `/icon.png?v=${ICON_CACHE}`, type: "image/png", sizes: "16x16" },
+      { url: `/brand-logo.png?v=${ICON_CACHE}`, type: "image/png" },
+    ],
+    apple: [{ url: `/apple-icon.png?v=${ICON_CACHE}`, type: "image/png" }],
+    shortcut: `/icon.png?v=${ICON_CACHE}`,
+  },
 };
 
 export default function RootLayout({
