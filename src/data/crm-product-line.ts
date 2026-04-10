@@ -1,4 +1,18 @@
-/** Продуктовая линейка (amoCRM) — источник: коммерческое предложение */
+/** Услуги (amoCRM) — источник: коммерческое предложение */
+
+function ruAmount(n: number): string {
+  return n.toLocaleString("ru-RU").replace(/[\u202f\u00a0]/g, " ");
+}
+
+/** Отображение цены: «от … тенге» */
+export function priceFromTenge(amount: number): string {
+  return `от ${ruAmount(amount)} тенге`;
+}
+
+/** Тариф сопровождения в месяц */
+export function priceFromTengePerMonth(amount: number): string {
+  return `от ${ruAmount(amount)} тенге/мес`;
+}
 
 export type ProductPackItem = {
   title: string;
@@ -14,6 +28,8 @@ export type ProductPack = {
   teaser: string;
   icon: string;
   priceLabel: string;
+  /** Уточнение к цене (только подробное окно), напр. лицензия */
+  priceNote?: string;
   numericPrice: number;
   timeline: string;
   audience: string;
@@ -37,7 +53,6 @@ export type MaintenanceTier = {
   name: string;
   hours: string;
   fit: string;
-  priceLabel: string;
   numericPrice: number;
 };
 
@@ -49,7 +64,8 @@ export const productPacks: ProductPack[] = [
     icon: "⚡",
     teaser:
       "Первый вход в цифровые продажи: amoCRM с нуля за несколько дней — без хаоса в таблицах и потерянных заявок.",
-    priceLabel: "200 000 ₸ + лицензия amoCRM (по тарифу клиента)",
+    priceLabel: priceFromTenge(200_000),
+    priceNote: "Лицензия amoCRM оплачивается отдельно — по тарифу провайдера.",
     numericPrice: 200_000,
     timeline: "3–5 рабочих дней",
     audience:
@@ -104,7 +120,7 @@ export const productPacks: ProductPack[] = [
     icon: "⚙️",
     teaser:
       "Автоматизация, SalesBot, зоны менеджеров и аналитика — для компаний, где уже есть поток заявок, но нет системного контроля.",
-    priceLabel: "500 000 ₸",
+    priceLabel: priceFromTenge(500_000),
     numericPrice: 500_000,
     timeline: "10–15 рабочих дней",
     audience:
@@ -164,7 +180,7 @@ export const consultingProduct = {
   icon: "🏗️",
   teaser:
     "Не только CRM: система продаж, найм, обучение и сопровождение до результата — методология Sales Hub, 3 месяца.",
-  priceLabel: "1 500 000 ₸",
+  priceLabel: priceFromTenge(1_500_000),
   numericPrice: 1_500_000,
   timeline: "3 месяца",
   format: "Полный консалтинг и внедрение по методологии Sales Hub",
@@ -217,7 +233,7 @@ export const maintenanceIntro = {
   icon: "🛠️",
   teaser:
     "Поддержка, доработки и развитие amoCRM под ваш рост — чтобы система не простаивала раз в квартал.",
-  cardPriceLabel: "от 100 000 ₸ / мес",
+  cardPriceLabel: priceFromTengePerMonth(100_000),
   forWho:
     "Для компаний, которые уже внедрили amoCRM и хотят, чтобы система жила, развивалась и давала результат — а не превратилась в «ещё один инструмент».",
   lead: "Берём CRM под управление: поддержка, оптимизация и развитие под рост бизнеса.",
@@ -266,21 +282,18 @@ export const maintenanceTiers: MaintenanceTier[] = [
     name: "Base",
     hours: "10 часов / мес",
     fit: "Малый бизнес: поддержка, мелкие задачи, корректировки, консультации.",
-    priceLabel: "100 000 ₸ / мес",
     numericPrice: 100_000,
   },
   {
     name: "Pro",
     hours: "20 часов / мес",
     fit: "Активная работа: автоматизации, SalesBot, отчёты, обучение.",
-    priceLabel: "180 000 ₸ / мес",
     numericPrice: 180_000,
   },
   {
     name: "Max",
     hours: "40 часов / мес",
     fit: "Полное сопровождение: доработки, аналитика, оптимизация, развитие CRM под стратегию.",
-    priceLabel: "300 000 ₸ / мес",
     numericPrice: 300_000,
   },
 ];

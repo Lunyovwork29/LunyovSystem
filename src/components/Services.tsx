@@ -7,6 +7,7 @@ import {
   maintenanceIntro,
   maintenanceServices,
   maintenanceTiers,
+  priceFromTengePerMonth,
   productPacks,
   type ProductPack,
   type ProductPackItem,
@@ -194,6 +195,9 @@ function ProductDetailModal({
                   <div className="mt-1 font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--text)]">
                     {pack.priceLabel}
                   </div>
+                  {pack.priceNote ? (
+                    <p className="mt-2 text-[11px] leading-snug text-[var(--muted)]">{pack.priceNote}</p>
+                  ) : null}
                   <div className="mt-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
                     Срок
                   </div>
@@ -347,13 +351,15 @@ function ProductDetailModal({
                       {tier.hours}
                     </div>
                     <p className="mb-3 flex-1 text-[12px] leading-snug text-[var(--muted)]">{tier.fit}</p>
-                    <div className="mb-3 text-sm font-semibold text-[var(--text)]">{tier.priceLabel}</div>
+                    <div className="mb-3 text-sm font-semibold text-[var(--text)]">
+                      {priceFromTengePerMonth(tier.numericPrice)}
+                    </div>
                     <button
                       type="button"
                       onClick={() => {
                         addToCart({
                           title: `Сопровождение amo — ${tier.name} (${tier.hours})`,
-                          price: tier.priceLabel,
+                          price: priceFromTengePerMonth(tier.numericPrice),
                           numericPrice: tier.numericPrice,
                         });
                         onClose();
@@ -428,19 +434,8 @@ function ProductCard({
         ))}
       </ul>
 
-      <div className="mb-5 font-[family-name:var(--font-display)] text-[22px] leading-none tracking-tight text-[var(--text)] xl:text-[26px]">
+      <div className="mb-5 font-[family-name:var(--font-display)] text-[clamp(1.05rem,3.8vw,1.55rem)] leading-tight tracking-tight text-[var(--text)] xl:text-[26px]">
         {cardPriceLabel(product)}
-        {product.kind !== "maintenance" ? (
-          <span className="font-[family-name:var(--font-body)] text-sm font-normal text-[var(--muted)]">
-            {" "}
-            / пакет
-          </span>
-        ) : (
-          <span className="font-[family-name:var(--font-body)] text-sm font-normal text-[var(--muted)]">
-            {" "}
-            (тарифы)
-          </span>
-        )}
       </div>
 
       <button
@@ -481,12 +476,11 @@ export default function Services() {
             amoCRM
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-[clamp(2.5rem,6vw,4.5rem)] font-normal uppercase leading-[0.95] tracking-[0.02em] text-[var(--text)] max-md:mt-1">
-            Продуктовая линейка
+            Услуги
           </h2>
           <div className="mt-6 h-0.5 w-[60px] bg-[var(--accent)]" />
           <p className="mt-6 max-w-2xl text-[var(--muted)] leading-relaxed">
-            Четыре формата под разные этапы зрелости — нажмите на карточку, чтобы увидеть этапы, результаты и
-            состав пакета.
+            Четыре формата под разную задачу — нажмите на карточку, чтобы открыть подробности, этапы и результаты.
           </p>
         </header>
 
