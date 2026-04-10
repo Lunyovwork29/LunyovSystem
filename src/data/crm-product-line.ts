@@ -10,6 +10,9 @@ export type ProductPack = {
   slug: string;
   label: string;
   title: string;
+  /** Короткий текст на карточке */
+  teaser: string;
+  icon: string;
   priceLabel: string;
   numericPrice: number;
   timeline: string;
@@ -43,6 +46,9 @@ export const productPacks: ProductPack[] = [
     slug: "quick-start",
     label: "Продукт 1",
     title: "Быстрый старт",
+    icon: "⚡",
+    teaser:
+      "Первый вход в цифровые продажи: amoCRM с нуля за несколько дней — без хаоса в таблицах и потерянных заявок.",
     priceLabel: "200 000 ₸ + лицензия amoCRM (по тарифу клиента)",
     numericPrice: 200_000,
     timeline: "3–5 рабочих дней",
@@ -95,6 +101,9 @@ export const productPacks: ProductPack[] = [
     slug: "full-deploy",
     label: "Продукт 2",
     title: "Полное внедрение",
+    icon: "⚙️",
+    teaser:
+      "Автоматизация, SalesBot, зоны менеджеров и аналитика — для компаний, где уже есть поток заявок, но нет системного контроля.",
     priceLabel: "500 000 ₸",
     numericPrice: 500_000,
     timeline: "10–15 рабочих дней",
@@ -152,6 +161,9 @@ export const consultingProduct = {
   slug: "sales-dept",
   label: "Продукт 3",
   title: "Построение отдела продаж на базе amoCRM",
+  icon: "🏗️",
+  teaser:
+    "Не только CRM: система продаж, найм, обучение и сопровождение до результата — методология Sales Hub, 3 месяца.",
   priceLabel: "1 500 000 ₸",
   numericPrice: 1_500_000,
   timeline: "3 месяца",
@@ -199,8 +211,13 @@ export const consultingProduct = {
 };
 
 export const maintenanceIntro = {
+  slug: "maintenance",
   title: "Сопровождение CRM-системы amo",
   label: "Продукт 4",
+  icon: "🛠️",
+  teaser:
+    "Поддержка, доработки и развитие amoCRM под ваш рост — чтобы система не простаивала раз в квартал.",
+  cardPriceLabel: "от 100 000 ₸ / мес",
   forWho:
     "Для компаний, которые уже внедрили amoCRM и хотят, чтобы система жила, развивалась и давала результат — а не превратилась в «ещё один инструмент».",
   lead: "Берём CRM под управление: поддержка, оптимизация и развитие под рост бизнеса.",

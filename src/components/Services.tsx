@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect, useId, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import {
   consultingProduct,
@@ -11,12 +12,75 @@ import {
   type ProductPackItem,
 } from "@/data/crm-product-line";
 
-function PackItemCard({ item }: { item: ProductPackItem }) {
+type CardProduct =
+  | { kind: "pack"; pack: ProductPack }
+  | { kind: "consulting" }
+  | { kind: "maintenance" };
+
+function stageTitlesForCard(p: CardProduct): string[] {
+  if (p.kind === "pack") return p.pack.items.map((i) => i.title);
+  if (p.kind === "consulting") return consultingProduct.blocks.map((b) => b.title);
+  return maintenanceServices.map((r) => r.service);
+}
+
+function cardTitle(p: CardProduct): string {
+  if (p.kind === "pack") return p.pack.title;
+  if (p.kind === "consulting") return consultingProduct.title;
+  return maintenanceIntro.title;
+}
+
+function cardTeaser(p: CardProduct): string {
+  if (p.kind === "pack") return p.pack.teaser;
+  if (p.kind === "consulting") return consultingProduct.teaser;
+  return maintenanceIntro.teaser;
+}
+
+function cardIcon(p: CardProduct): string {
+  if (p.kind === "pack") return p.pack.icon;
+  if (p.kind === "consulting") return consultingProduct.icon;
+  return maintenanceIntro.icon;
+}
+
+function cardPriceLabel(p: CardProduct): string {
+  if (p.kind === "pack") return p.pack.priceLabel;
+  if (p.kind === "consulting") return consultingProduct.priceLabel;
+  return maintenanceIntro.cardPriceLabel;
+}
+
+function cardFeatured(p: CardProduct): boolean {
+  return p.kind === "pack" && Boolean(p.pack.featured);
+}
+
+function modalSlug(p: CardProduct): string {
+  if (p.kind === "pack") return p.pack.slug;
+  if (p.kind === "consulting") return consultingProduct.slug;
+  return maintenanceIntro.slug;
+}
+
+function addToCartPayload(p: CardProduct):
+  | { title: string; price: string; numericPrice: number }
+  | null {
+  if (p.kind === "pack") {
+    const x = p.pack;
+    return {
+      title: `${x.label}. ${x.title}`,
+      price: x.priceLabel,
+      numericPrice: x.numericPrice,
+    };
+  }
+  if (p.kind === "consulting") {
+    const x = consultingProduct;
+    return { title: `${x.label}. ${x.title}`, price: x.priceLabel, numericPrice: x.numericPrice };
+  }
+  return null;
+}
+
+function PackDetailBlock({ item }: { item: ProductPackItem }) {
   return (
-    <div className="group rounded-sm border border-[var(--border)] bg-[var(--surface-2)]/50 p-4 transition-colors hover:border-[var(--accent)]/35">
-      <h4 className="text-sm font-bold leading-snug text-[var(--text)]">{item.title}</h4>
+    <div className="rounded-sm border border-[var(--border)] bg-[var(--surface-2)]/50 p-4">
+      <h4 className="text-sm font-bold text-[var(--text)]">{item.title}</h4>
       <p className="mt-2 text-[13px] leading-relaxed text-[var(--muted)]">{item.description}</p>
-      <p className="mt-3 border-t border-[var(--border)]/80 pt-3 text-[12px] leading-snug text-[var(--accent-soft)]">
+      <p className="mt-3 border-t border-[var(--border)] pt-3 text-[12px] leading-snug text-[var(--accent-soft)]">
         <span className="font-semibold text-[var(--accent)]">Результат: </span>
         {item.result}
       </p>
@@ -24,247 +88,388 @@ function PackItemCard({ item }: { item: ProductPackItem }) {
   );
 }
 
-function ProductPackCard({ pack }: { pack: ProductPack }) {
+function ProductDetailModal({
+  slug,
+  onClose,
+}: {
+  slug: string | null;
+  onClose: () => void;
+}) {
   const { addToCart } = useCart();
+  const titleId = useId();
+
+  useEffect(() => {
+    if (!slug) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [slug]);
+
+  useEffect(() => {
+    if (!slug) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [slug, onClose]);
+
+  const handleAddPackOrConsulting = useCallback(() => {
+    const pack = productPacks.find((p) => p.slug === slug);
+    if (pack) {
+      addToCart({
+        title: `${pack.label}. ${pack.title}`,
+        price: pack.priceLabel,
+        numericPrice: pack.numericPrice,
+      });
+      onClose();
+      return;
+    }
+    if (slug === consultingProduct.slug) {
+      const x = consultingProduct;
+      addToCart({ title: `${x.label}. ${x.title}`, price: x.priceLabel, numericPrice: x.numericPrice });
+      onClose();
+    }
+  }, [slug, addToCart, onClose]);
+
+  if (!slug) return null;
+
+  const pack = productPacks.find((p) => p.slug === slug);
+  const isConsulting = slug === consultingProduct.slug;
+  const isMaintenance = slug === maintenanceIntro.slug;
 
   return (
-    <article
-      className={`relative overflow-hidden border border-[var(--border)] bg-[var(--surface)] px-6 pb-8 pt-8 transition-all duration-500 md:px-8 md:pt-9 ${
-        pack.featured
-          ? "border-[var(--accent)]/45 bg-[linear-gradient(165deg,var(--surface)_0%,rgba(184,154,98,0.09)_55%,var(--surface)_100%)] shadow-[0_24px_60px_rgba(0,0,0,0.35)]"
-          : "hover:border-[var(--accent)]/40"
-      }`}
+    <div
+      className="fixed inset-0 z-[200] flex items-end justify-center p-0 sm:items-center sm:p-6"
+      role="presentation"
     >
-      {pack.featured ? (
-        <div className="absolute right-5 top-5 rounded-sm bg-[var(--accent)] px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--bg)]">
-          Полное внедрение
-        </div>
-      ) : null}
-
-      <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
-        <div className="max-w-xl">
-          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
-            {pack.label}
+      <button
+        type="button"
+        className="absolute inset-0 bg-black/75 backdrop-blur-[2px]"
+        aria-label="Закрыть"
+        onClick={onClose}
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="relative flex max-h-[min(92vh,900px)] w-full max-w-3xl flex-col overflow-hidden rounded-t-[var(--radius)] border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-soft)] sm:rounded-[var(--radius)]"
+      >
+        <div className="flex shrink-0 items-center justify-between border-b border-[var(--border)] px-5 py-4 md:px-8">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--accent)]">
+            Подробности
           </p>
-          <h3 className="font-[family-name:var(--font-display)] text-2xl font-semibold uppercase tracking-[0.02em] text-[var(--text)] md:text-3xl">
-            {pack.title}
-          </h3>
-          <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">{pack.audience}</p>
-        </div>
-        <div className="flex shrink-0 flex-col gap-3 rounded-sm border border-[var(--border)] bg-[var(--bg)]/40 px-5 py-4 md:min-w-[260px]">
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
-              Стоимость
-            </div>
-            <div className="mt-1 font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--text)] md:text-2xl">
-              {pack.priceLabel}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
-              Срок
-            </div>
-            <div className="mt-1 text-sm font-medium text-[var(--text)]">{pack.timeline}</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
-        Включено в пакет
-      </div>
-      <div className="mb-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {pack.items.map((item) => (
-          <PackItemCard key={item.title} item={item} />
-        ))}
-      </div>
-
-      <div className="flex flex-col gap-6 border-t border-[var(--border)] pt-6 md:flex-row md:items-center md:justify-between">
-        <p className="max-w-2xl text-sm leading-relaxed text-[var(--muted)]">
-          <span className="font-semibold text-[var(--accent)]">Итог: </span>
-          {pack.summary}
-        </p>
-        <button
-          type="button"
-          onClick={() =>
-            addToCart({
-              title: `${pack.label}. ${pack.title}`,
-              price: pack.priceLabel,
-              numericPrice: pack.numericPrice,
-            })
-          }
-          className="shrink-0 rounded-sm bg-[var(--accent)] px-8 py-3.5 text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--bg)] transition-all duration-300 hover:bg-[var(--accent-hover)]"
-        >
-          В корзину
-        </button>
-      </div>
-    </article>
-  );
-}
-
-function ConsultingSection() {
-  const { addToCart } = useCart();
-  const p = consultingProduct;
-
-  return (
-    <article className="border border-[var(--accent)]/35 bg-[linear-gradient(180deg,var(--surface)_0%,rgba(184,154,98,0.06)_40%,var(--surface)_100%)] px-6 py-10 md:px-10 md:py-12">
-      <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-2xl">
-          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
-            {p.label}
-          </p>
-          <h3 className="font-[family-name:var(--font-display)] text-[clamp(1.75rem,4vw,2.75rem)] font-semibold uppercase leading-[1.05] tracking-[0.02em] text-[var(--text)]">
-            {p.title}
-          </h3>
-          <p className="mt-3 text-sm font-medium text-[var(--accent-soft)]">{p.format}</p>
-          <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">{p.audience}</p>
-        </div>
-        <div className="flex shrink-0 flex-col gap-3 rounded-sm border border-[var(--border)] bg-[var(--bg)]/50 px-5 py-4 md:min-w-[280px]">
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
-              Стоимость
-            </div>
-            <div className="mt-1 font-[family-name:var(--font-display)] text-2xl font-semibold text-[var(--text)]">
-              {p.priceLabel}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
-              Срок
-            </div>
-            <div className="mt-1 text-sm font-medium text-[var(--text)]">{p.timeline}</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-3">
-        {p.blocks.map((block, i) => (
-          <div
-            key={block.title}
-            className="flex flex-col rounded-sm border border-[var(--border)] bg-[var(--surface-2)]/40 p-5 md:p-6"
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-9 w-9 items-center justify-center rounded-sm text-[var(--muted)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text)]"
+            aria-label="Закрыть окно"
           >
-            <div className="mb-4 flex items-baseline gap-3">
-              <span className="font-[family-name:var(--font-display)] text-3xl font-bold leading-none text-[var(--accent)]/90">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <h4 className="text-base font-bold leading-snug text-[var(--text)]">{block.title}</h4>
-            </div>
-            <ul className="mb-6 flex-1 list-none space-y-2.5">
-              {block.body.map((line, li) => (
-                <li
-                  key={`${block.title}-${li}`}
-                  className="flex gap-2 text-[13px] leading-relaxed text-[var(--muted)] before:mt-2 before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-[var(--accent)]/70 before:content-['']"
+            <span className="text-xl leading-none">×</span>
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-5 py-6 md:px-8 md:py-8">
+          {pack ? (
+            <>
+              <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+                    {pack.label}
+                  </p>
+                  <h2
+                    id={titleId}
+                    className="font-[family-name:var(--font-display)] text-2xl font-semibold uppercase leading-tight tracking-[0.02em] text-[var(--text)] md:text-3xl"
+                  >
+                    {pack.title}
+                  </h2>
+                  <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">{pack.audience}</p>
+                </div>
+                <div className="shrink-0 rounded-sm border border-[var(--border)] bg-[var(--bg)]/45 px-5 py-4 md:min-w-[220px]">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                    Стоимость
+                  </div>
+                  <div className="mt-1 font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--text)]">
+                    {pack.priceLabel}
+                  </div>
+                  <div className="mt-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                    Срок
+                  </div>
+                  <div className="mt-1 text-sm font-medium text-[var(--text)]">{pack.timeline}</div>
+                </div>
+              </div>
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                Включено в пакет
+              </p>
+              <div className="mb-8 grid gap-3 sm:grid-cols-2">
+                {pack.items.map((item) => (
+                  <PackDetailBlock key={item.title} item={item} />
+                ))}
+              </div>
+              <p className="mb-8 text-sm leading-relaxed text-[var(--muted)]">
+                <span className="font-semibold text-[var(--accent)]">Итог: </span>
+                {pack.summary}
+              </p>
+              <button
+                type="button"
+                onClick={handleAddPackOrConsulting}
+                className="w-full rounded-sm bg-[var(--accent)] py-3.5 text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--bg)] transition-colors hover:bg-[var(--accent-hover)]"
+              >
+                В корзину
+              </button>
+            </>
+          ) : null}
+
+          {isConsulting ? (
+            <>
+              <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+                <div>
+                  <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+                    {consultingProduct.label}
+                  </p>
+                  <h2
+                    id={titleId}
+                    className="font-[family-name:var(--font-display)] text-2xl font-semibold uppercase leading-tight tracking-[0.02em] text-[var(--text)] md:text-3xl"
+                  >
+                    {consultingProduct.title}
+                  </h2>
+                  <p className="mt-2 text-sm font-medium text-[var(--accent-soft)]">
+                    {consultingProduct.format}
+                  </p>
+                  <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">
+                    {consultingProduct.audience}
+                  </p>
+                </div>
+                <div className="shrink-0 rounded-sm border border-[var(--border)] bg-[var(--bg)]/45 px-5 py-4 md:min-w-[220px]">
+                  <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                    Стоимость
+                  </div>
+                  <div className="mt-1 font-[family-name:var(--font-display)] text-xl font-semibold text-[var(--text)]">
+                    {consultingProduct.priceLabel}
+                  </div>
+                  <div className="mt-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                    Срок
+                  </div>
+                  <div className="mt-1 text-sm font-medium text-[var(--text)]">
+                    {consultingProduct.timeline}
+                  </div>
+                </div>
+              </div>
+              <div className="mb-8 space-y-6">
+                {consultingProduct.blocks.map((block, i) => (
+                  <div
+                    key={block.title}
+                    className="rounded-sm border border-[var(--border)] bg-[var(--surface-2)]/40 p-5"
+                  >
+                    <div className="mb-3 flex items-baseline gap-3">
+                      <span className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--accent)]">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <h3 className="text-base font-bold text-[var(--text)]">{block.title}</h3>
+                    </div>
+                    <ul className="mb-4 list-none space-y-2">
+                      {block.body.map((line, li) => (
+                        <li
+                          key={`${block.title}-${li}`}
+                          className="flex gap-2 text-[13px] leading-relaxed text-[var(--muted)] before:mt-2 before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-[var(--accent)]/70 before:content-['']"
+                        >
+                          {line}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="border-t border-[var(--border)] pt-4 text-[12px] leading-snug text-[var(--accent-soft)]">
+                      <span className="font-bold text-[var(--accent)]">Результат: </span>
+                      {block.result}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={handleAddPackOrConsulting}
+                className="w-full rounded-sm bg-[var(--accent)] py-3.5 text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--bg)] transition-colors hover:bg-[var(--accent-hover)]"
+              >
+                В корзину
+              </button>
+            </>
+          ) : null}
+
+          {isMaintenance ? (
+            <>
+              <div className="mb-6">
+                <p className="mb-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+                  {maintenanceIntro.label}
+                </p>
+                <h2
+                  id={titleId}
+                  className="font-[family-name:var(--font-display)] text-2xl font-semibold uppercase leading-tight tracking-[0.02em] text-[var(--text)] md:text-3xl"
                 >
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-auto border-t border-[var(--border)] pt-4 text-[12px] leading-snug text-[var(--accent-soft)]">
-              <span className="font-bold text-[var(--accent)]">Результат: </span>
-              {block.result}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-10 flex justify-center md:justify-end">
-        <button
-          type="button"
-          onClick={() =>
-            addToCart({
-              title: `${p.label}. ${p.title}`,
-              price: p.priceLabel,
-              numericPrice: p.numericPrice,
-            })
-          }
-          className="w-full rounded-sm bg-[var(--accent)] py-3.5 text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--bg)] transition-all duration-300 hover:bg-[var(--accent-hover)] md:w-auto md:px-12"
-        >
-          В корзину
-        </button>
-      </div>
-    </article>
-  );
-}
-
-function MaintenanceSection() {
-  const { addToCart } = useCart();
-  const intro = maintenanceIntro;
-
-  return (
-    <div className="border border-[var(--border)] bg-[var(--surface)] px-6 py-10 md:px-8 md:py-11">
-      <div className="mb-10 max-w-3xl">
-        <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
-          {intro.label}
-        </p>
-        <h3 className="font-[family-name:var(--font-display)] text-2xl font-semibold uppercase tracking-[0.02em] text-[var(--text)] md:text-3xl">
-          {intro.title}
-        </h3>
-        <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">{intro.forWho}</p>
-        <p className="mt-3 text-sm font-medium leading-relaxed text-[var(--text)]">{intro.lead}</p>
-      </div>
-
-      <div className="mb-4 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
-        Что входит в сопровождение
-      </div>
-      <div className="mb-10 overflow-hidden rounded-sm border border-[var(--border)]">
-        <div className="hidden grid-cols-[minmax(140px,200px)_1fr] gap-0 border-b border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--muted)] md:grid">
-          <div>Услуга</div>
-          <div>Описание</div>
+                  {maintenanceIntro.title}
+                </h2>
+                <p className="mt-4 text-sm leading-relaxed text-[var(--muted)]">
+                  {maintenanceIntro.forWho}
+                </p>
+                <p className="mt-2 text-sm text-[var(--text)]">{maintenanceIntro.lead}</p>
+              </div>
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                Что входит
+              </p>
+              <div className="mb-8 space-y-0 overflow-hidden rounded-sm border border-[var(--border)]">
+                {maintenanceServices.map((row, idx) => (
+                  <div
+                    key={row.service}
+                    className={`border-t border-[var(--border)] px-4 py-3 first:border-t-0 ${
+                      idx % 2 === 1 ? "bg-[var(--surface-2)]/35" : ""
+                    }`}
+                  >
+                    <div className="text-sm font-bold text-[var(--text)]">{row.service}</div>
+                    <p className="mt-1 text-[13px] leading-relaxed text-[var(--muted)]">
+                      {row.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                Тарифы
+              </p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {maintenanceTiers.map((tier) => (
+                  <div
+                    key={tier.name}
+                    className="flex flex-col rounded-sm border border-[var(--border)] bg-[var(--surface-2)]/30 p-4"
+                  >
+                    <div className="mb-1 font-[family-name:var(--font-display)] text-lg font-bold text-[var(--text)]">
+                      {tier.name}
+                    </div>
+                    <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--accent)]">
+                      {tier.hours}
+                    </div>
+                    <p className="mb-3 flex-1 text-[12px] leading-snug text-[var(--muted)]">{tier.fit}</p>
+                    <div className="mb-3 text-sm font-semibold text-[var(--text)]">{tier.priceLabel}</div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        addToCart({
+                          title: `Сопровождение amo — ${tier.name} (${tier.hours})`,
+                          price: tier.priceLabel,
+                          numericPrice: tier.numericPrice,
+                        });
+                        onClose();
+                      }}
+                      className="mt-auto w-full rounded-sm bg-[var(--accent)] py-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--bg)] hover:bg-[var(--accent-hover)]"
+                    >
+                      В корзину
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : null}
         </div>
-        {maintenanceServices.map((row, idx) => (
-          <div
-            key={row.service}
-            className={`grid gap-3 border-[var(--border)] px-4 py-4 md:grid-cols-[minmax(140px,200px)_1fr] md:gap-6 md:py-3.5 ${
-              idx > 0 ? "border-t" : "md:border-t-0"
-            } ${idx % 2 === 1 ? "bg-[var(--surface-2)]/35" : ""}`}
-          >
-            <div className="text-[13px] font-bold text-[var(--text)] md:text-sm">{row.service}</div>
-            <div className="text-[13px] leading-relaxed text-[var(--muted)]">{row.description}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className="mb-4 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
-        Формат сотрудничества
-      </div>
-      <div className="grid gap-4 md:grid-cols-3">
-        {maintenanceTiers.map((tier) => (
-          <div
-            key={tier.name}
-            className="flex flex-col border border-[var(--border)] bg-[var(--surface-2)]/30 p-5 transition-colors hover:border-[var(--accent)]/45"
-          >
-            <div className="mb-1 flex items-baseline justify-between gap-2">
-              <span className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--text)]">
-                {tier.name}
-              </span>
-              <span className="rounded-sm bg-[var(--accent)]/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--accent)]">
-                {tier.hours}
-              </span>
-            </div>
-            <p className="mb-5 flex-1 text-[13px] leading-relaxed text-[var(--muted)]">{tier.fit}</p>
-            <div className="mb-4 font-[family-name:var(--font-display)] text-xl text-[var(--text)]">
-              {tier.priceLabel}
-            </div>
-            <button
-              type="button"
-              onClick={() =>
-                addToCart({
-                  title: `Сопровождение amo — ${tier.name} (${tier.hours})`,
-                  price: tier.priceLabel,
-                  numericPrice: tier.numericPrice,
-                })
-              }
-              className="mt-auto w-full rounded-sm border border-[var(--accent)]/50 bg-transparent py-2.5 text-[11px] font-bold uppercase tracking-[0.1em] text-[var(--accent)] transition-all hover:bg-[var(--accent)] hover:text-[var(--bg)]"
-            >
-              В корзину
-            </button>
-          </div>
-        ))}
       </div>
     </div>
   );
 }
 
+function ProductCard({
+  product,
+  onOpen,
+}: {
+  product: CardProduct;
+  onOpen: (slug: string) => void;
+}) {
+  const { addToCart } = useCart();
+  const stages = stageTitlesForCard(product);
+  const slug = modalSlug(product);
+  const payload = addToCartPayload(product);
+
+  return (
+    <article
+      role="button"
+      tabIndex={0}
+      onClick={() => onOpen(slug)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen(slug);
+        }
+      }}
+      className={`group relative flex min-h-full cursor-pointer flex-col overflow-hidden border bg-[var(--surface)] px-6 pb-8 pt-9 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+        cardFeatured(product)
+          ? "border-[var(--accent)]/50 bg-[linear-gradient(160deg,var(--surface)_0%,rgba(184,154,98,0.07)_100%)] hover:-translate-y-0.5 hover:border-[var(--accent)]/65 hover:shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
+          : "border-[var(--border)] hover:-translate-y-0.5 hover:border-[var(--accent)]/55 hover:shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
+      }`}
+    >
+      {cardFeatured(product) ? (
+        <div className="absolute right-4 top-4 rounded-sm bg-[var(--accent)] px-2 py-1 text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--bg)]">
+          Популярное
+        </div>
+      ) : null}
+
+      <div className="mb-4 text-[34px] leading-none" aria-hidden>
+        {cardIcon(product)}
+      </div>
+      <h3 className="mb-2 pr-2 text-lg font-bold uppercase leading-snug text-[var(--text)]">
+        {cardTitle(product)}
+      </h3>
+      <p className="mb-5 text-sm leading-[1.65] text-[var(--muted)]">{cardTeaser(product)}</p>
+
+      <ul className="mb-6 flex-1 list-none space-y-0">
+        {stages.map((line) => (
+          <li
+            key={line}
+            className="flex items-start gap-2 border-b border-[var(--border)] py-2 text-[12px] leading-snug text-[var(--muted)] last:border-b-0"
+          >
+            <span className="font-bold text-[var(--accent)]">—</span>
+            {line}
+          </li>
+        ))}
+      </ul>
+
+      <div className="mb-5 font-[family-name:var(--font-display)] text-[22px] leading-none tracking-tight text-[var(--text)] xl:text-[26px]">
+        {cardPriceLabel(product)}
+        {product.kind !== "maintenance" ? (
+          <span className="font-[family-name:var(--font-body)] text-sm font-normal text-[var(--muted)]">
+            {" "}
+            / пакет
+          </span>
+        ) : (
+          <span className="font-[family-name:var(--font-body)] text-sm font-normal text-[var(--muted)]">
+            {" "}
+            (тарифы)
+          </span>
+        )}
+      </div>
+
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          if (payload) {
+            addToCart(payload);
+          } else {
+            onOpen(slug);
+          }
+        }}
+        className="mt-auto w-full rounded-sm bg-[var(--accent)] py-3 text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--bg)] opacity-[0.92] transition-all duration-300 ease-out hover:bg-[var(--accent-hover)] group-hover:opacity-100"
+      >
+        {product.kind === "maintenance" ? "Тарифы и детали" : "В корзину"}
+      </button>
+    </article>
+  );
+}
+
+const CARD_PRODUCTS: CardProduct[] = [
+  ...productPacks.map((pack) => ({ kind: "pack" as const, pack })),
+  { kind: "consulting" as const },
+  { kind: "maintenance" as const },
+];
+
 export default function Services() {
+  const [detailSlug, setDetailSlug] = useState<string | null>(null);
+
   return (
     <section id="services" className="border-t border-[var(--border)] py-[100px] md:px-6">
       <div className="container-site">
@@ -277,19 +482,23 @@ export default function Services() {
           </h2>
           <div className="mt-6 h-0.5 w-[60px] bg-[var(--accent)]" />
           <p className="mt-6 max-w-2xl text-[var(--muted)] leading-relaxed">
-            Четыре формата: быстрый старт, полное внедрение, построение отдела продаж на базе amoCRM и
-            ежемесячное сопровождение — от первых заявок в системе до зрелого ОП с цифрами и контролем.
+            Четыре формата под разные этапы зрелости — нажмите на карточку, чтобы увидеть этапы, результаты и
+            состав пакета.
           </p>
         </header>
 
-        <div className="flex flex-col gap-8 md:gap-10">
-          {productPacks.map((pack) => (
-            <ProductPackCard key={pack.slug} pack={pack} />
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {CARD_PRODUCTS.map((product, index) => (
+            <ProductCard
+              key={product.kind === "pack" ? product.pack.slug : `${product.kind}-${index}`}
+              product={product}
+              onOpen={setDetailSlug}
+            />
           ))}
-          <ConsultingSection />
-          <MaintenanceSection />
         </div>
       </div>
+
+      <ProductDetailModal slug={detailSlug} onClose={() => setDetailSlug(null)} />
     </section>
   );
 }
