@@ -2,11 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /**
-   * Браузеры часто дергают /favicon.ico до разбора <head>.
-   * Если файла нет — виден «чужой» дефолт. Отдаём тот же PNG, что и /icon.png.
+   * /favicon.ico запрашивается до разбора <head>. Отдаём лёгкий PNG из public/.
    */
   async rewrites() {
-    return [{ source: "/favicon.ico", destination: "/icon.png" }];
+    return [{ source: "/favicon.ico", destination: "/favicon.png" }];
   },
 };
 

@@ -15,7 +15,7 @@ const displayFont = Sora({
   weight: ["400", "600", "700", "800"],
 });
 
-const ICON_CACHE = "6";
+const ICON_CACHE = "7";
 
 export const metadata: Metadata = {
   title: {
@@ -26,12 +26,16 @@ export const metadata: Metadata = {
     "Системные отделы продаж, внедрение CRM (amo, Kommo, Bitrix), контроль и рост выручки без хаоса.",
   icons: {
     icon: [
-      { url: `/icon.png?v=${ICON_CACHE}`, type: "image/png", sizes: "32x32" },
-      { url: `/icon.png?v=${ICON_CACHE}`, type: "image/png", sizes: "16x16" },
-      { url: `/brand-logo.png?v=${ICON_CACHE}`, type: "image/png" },
+      { url: `/favicon.png?v=${ICON_CACHE}`, type: "image/png", sizes: "32x32" },
     ],
-    apple: [{ url: `/apple-icon.png?v=${ICON_CACHE}`, type: "image/png" }],
-    shortcut: `/icon.png?v=${ICON_CACHE}`,
+    apple: [
+      {
+        url: `/apple-touch-icon.png?v=${ICON_CACHE}`,
+        type: "image/png",
+        sizes: "180x180",
+      },
+    ],
+    shortcut: `/favicon.png?v=${ICON_CACHE}`,
   },
 };
 
