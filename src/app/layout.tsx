@@ -15,6 +15,8 @@ const displayFont = Sora({
   weight: ["400", "600", "700", "800"],
 });
 
+/* Иконка вкладки: `src/app/icon.png` и `apple-icon.png` (копия логотипа) — Next подставляет сам */
+
 export const metadata: Metadata = {
   title: {
     default: "LN — Lunyov System",
@@ -22,10 +24,6 @@ export const metadata: Metadata = {
   },
   description:
     "Системные отделы продаж, внедрение CRM (amo, Kommo, Bitrix), контроль и рост выручки без хаоса.",
-  icons: {
-    icon: [{ url: "/brand-logo.png", type: "image/png" }],
-    apple: [{ url: "/brand-logo.png", type: "image/png" }],
-  },
 };
 
 export default function RootLayout({
