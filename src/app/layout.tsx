@@ -15,12 +15,12 @@ const displayFont = Sora({
   weight: ["400", "600", "700", "800"],
 });
 
-const ICON_CACHE = "7";
+const ICON_CACHE = "9";
 
 export const metadata: Metadata = {
   title: {
-    default: "LN — Lunyov System",
-    template: "%s | Lunyov System",
+    default: "LN Systems",
+    template: "%s | LN Systems",
   },
   description:
     "Системные отделы продаж, внедрение CRM (amo, Kommo, Bitrix), контроль и рост выручки без хаоса.",

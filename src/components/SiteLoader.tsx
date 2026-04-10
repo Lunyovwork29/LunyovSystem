@@ -40,13 +40,13 @@ export default function SiteLoader() {
       aria-label="Загрузка"
     >
       <div className="flex flex-col items-center gap-5">
-        <div className="brand-logo-wrap relative mx-auto h-16 w-[min(200px,72vw)] overflow-hidden p-2 md:h-[72px] md:w-[220px] md:p-2.5">
+        <div className="relative mx-auto h-20 w-[min(220px,78vw)] md:h-[88px] md:w-[260px]">
           <Image
             src="/brand-logo.png"
             alt=""
             fill
-            sizes="220px"
-            className="brand-logo-img object-contain object-left md:object-center"
+            sizes="260px"
+            className="object-contain object-center drop-shadow-[0_0_20px_rgba(184,154,98,0.2)]"
             priority
           />
         </div>

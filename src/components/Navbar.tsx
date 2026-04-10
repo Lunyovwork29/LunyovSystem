@@ -15,15 +15,15 @@ export default function Navbar() {
         <a
           href="#hero"
           className="group relative z-10 shrink-0 outline-none transition-opacity hover:opacity-90"
-          aria-label="На главную"
+          aria-label="LN Systems — на главную"
         >
-          <span className="brand-logo-wrap relative block h-9 w-[104px] overflow-hidden p-1 sm:w-[128px] md:h-11 md:w-[188px] md:p-1.5">
+          <span className="relative block h-9 w-[132px] md:h-11 md:w-[158px]">
             <Image
               src="/brand-logo.png"
-              alt="LN — системные продажи"
+              alt="LN Systems"
               fill
-              sizes="(max-width: 640px) 104px, 188px"
-              className="brand-logo-img object-contain object-left"
+              sizes="158px"
+              className="object-contain object-left drop-shadow-[0_0_14px_rgba(184,154,98,0.22)]"
               priority
             />
           </span>
