@@ -11,15 +11,17 @@ export default function Cases() {
       <div className="container-site">
         <div className="mb-14 max-w-3xl md:mb-[60px]">
           <div className="mb-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
-            Реальные результаты
+            Результаты клиентов
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-[clamp(2.5rem,6vw,4.5rem)] font-normal uppercase leading-[0.95] tracking-[0.02em] text-[var(--text)]">
             Кейсы
           </h2>
           <div className="mt-6 h-0.5 w-[60px] bg-[var(--accent)]" />
+          <p className="mt-6 max-w-2xl text-[var(--muted)] leading-relaxed">
+            Подборка внедрений: CRM, регламенты, контроль — с цифрами до и после.
+          </p>
         </div>
 
-        {/* gap: 2px как в эталоне — «плитка» на surface */}
         <div className="grid grid-cols-1 gap-[2px] md:grid-cols-2">
           {cases.map((item, i) => (
             <CaseCard
@@ -30,6 +32,7 @@ export default function Cases() {
               country={item.country}
               metrics={item.metrics}
               description={item.description}
+              logoSrc={item.logoSrc}
             />
           ))}
         </div>

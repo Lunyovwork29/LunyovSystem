@@ -96,6 +96,7 @@ function migrateFromV1(raw: LegacyCaseV1): CaseItem {
     country: "Казахстан",
     metrics: [{ value: result, label: "результат" }],
     description: pointsText,
+    logoSrc: undefined,
   };
 }
 

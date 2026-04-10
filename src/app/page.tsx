@@ -1,27 +1,27 @@
 import Hero from "@/components/Hero";
-import PainPoints from "@/components/PainPoints";
-import About from "@/components/About";
+import TrustStats from "@/components/TrustStats";
 import Cases from "@/components/Cases";
 import Services from "@/components/Services";
-import Process from "@/components/Process";
+import ProductCTA from "@/components/ProductCTA";
 import Contact from "@/components/Contact";
 import Cart from "@/components/Cart";
-import Articles from "@/components/Articles";
 import AdminPanel from "@/components/AdminPanel";
+import SiteLoader from "@/components/SiteLoader";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
-      <Hero />
-      <PainPoints />
-      <About />
-      <Cases />
-      <Services />
-      <Process />
-      <Articles />
-      <Contact />
-      <AdminPanel />
-      <Cart />
-    </main>
+    <>
+      <SiteLoader />
+      <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
+        <Hero />
+        <TrustStats />
+        <Cases />
+        <Services />
+        <ProductCTA />
+        <Contact />
+        <AdminPanel />
+        <Cart />
+      </main>
+    </>
   );
 }

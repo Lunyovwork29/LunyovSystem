@@ -4,84 +4,47 @@ import Navbar from "@/components/Navbar";
 
 export default function Hero() {
   return (
-    <section id="hero" className="relative overflow-hidden pb-18 pt-34 md:pb-24 md:pt-40">
+    <section id="hero" className="relative overflow-hidden pb-24 pt-28 md:pb-32 md:pt-36">
       <Navbar />
 
-      <div className="hero-depth pointer-events-none absolute inset-0" />
+      <div className="hero-depth pointer-events-none absolute inset-0 opacity-90" />
       <div className="hero-grid-overlay pointer-events-none absolute inset-0" />
 
       <div className="container-site relative z-10">
-        <div className="grid items-center gap-16 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="fade-up stagger-1">
-            <div className="kicker mb-8">Эксперт автоматизации продаж · Казахстан</div>
+        <div className="mx-auto max-w-4xl text-center md:text-left">
+          <p className="fade-up stagger-1 mb-6 inline-block text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+            Lunyov System · системные продажи
+          </p>
 
-            <h1 className="text-[clamp(4.1rem,11vw,8.8rem)] font-black uppercase leading-[0.84] tracking-[0.02em]">
-              <span className="block text-[var(--text)]">Никита</span>
-              <span className="block text-[var(--accent)]">Лунёв</span>
-            </h1>
+          <h1 className="fade-up stagger-2 font-[family-name:var(--font-display)] text-[clamp(1.85rem,5vw,3.35rem)] font-semibold leading-[1.08] tracking-tight text-[var(--text)] md:max-w-none">
+            Строим отделы продаж, которые приносят деньги, а не создают хаос
+          </h1>
 
-            <p className="mt-8 max-w-xl text-base leading-8 text-[var(--muted)] md:text-[1.07rem]">
-              Выстраиваю отделы продаж как систему: стратегия, CRM, контроль,
-              автоматизация и рост выручки.
-              <span className="font-semibold text-[var(--text)]"> Не консультация ради консультации, а измеримый результат.</span>
-            </p>
+          <ul className="fade-up stagger-3 mx-auto mt-8 max-w-xl space-y-2 text-left text-base leading-relaxed text-[var(--muted)] md:mx-0 md:text-[1.05rem]">
+            <li className="flex gap-3">
+              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--accent)]" aria-hidden />
+              <span>
+                Внедрение CRM <span className="text-[var(--text)]/90">(amo / Kommo / Bitrix)</span>
+              </span>
+            </li>
+            <li className="flex gap-3">
+              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--accent)]" aria-hidden />
+              <span>Построение системных продаж</span>
+            </li>
+            <li className="flex gap-3">
+              <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--accent)]" aria-hidden />
+              <span>Контроль и рост выручки</span>
+            </li>
+          </ul>
 
-            <div className="mt-8 flex flex-wrap gap-2.5">
-              {["AmoCRM", "Bitrix24", "Kommo", "Wazzup", "Sipuni", "Albato"].map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-sm border border-[rgba(200,169,110,0.2)] bg-[rgba(200,169,110,0.06)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--muted)]"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-10 flex flex-wrap gap-4">
-              <a href="#services" className="btn-primary">
-                Смотреть услуги
-              </a>
-              <a href="#cases" className="btn-secondary">
-                Кейсы
-              </a>
-            </div>
+          <div className="fade-up stagger-4 mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-start">
+            <a href="#contact" className="btn-primary w-full sm:w-auto">
+              Разобрать мой отдел продаж
+            </a>
+            <a href="#cases" className="btn-secondary w-full sm:w-auto">
+              Смотреть кейсы
+            </a>
           </div>
-
-          <aside className="fade-up stagger-3 lg:justify-self-end">
-            <article className="hero-floating-card w-full max-w-[430px]">
-              <div className="mb-10">
-                <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">Case preview · B2B</p>
-                <h3 className="mt-4 text-2xl font-semibold tracking-tight text-[var(--text)]">
-                  Внедрение CRM + регламенты продаж
-                </h3>
-              </div>
-
-              <div className="mb-7 grid grid-cols-2 gap-5">
-                <div>
-                  <p className="text-5xl font-semibold leading-none text-[var(--accent)]">60%</p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.12em] text-[var(--muted)]">
-                    ускорение обработки лидов
-                  </p>
-                </div>
-                <div>
-                  <p className="text-5xl font-semibold leading-none text-[var(--accent)]">0</p>
-                  <p className="mt-2 text-[11px] uppercase tracking-[0.12em] text-[var(--muted)]">
-                    потерянных заявок
-                  </p>
-                </div>
-              </div>
-
-              <p className="text-sm leading-7 text-[var(--muted)]">
-                До проекта лиды &quot;зависали&quot; и терялись на этапе первого контакта.
-                После настройки CRM, SLA и скриптов команда начала работать в
-                одном стандарте, а воронка стала прозрачной.
-              </p>
-
-              <div className="mt-8 inline-flex rounded-sm bg-[var(--accent)] px-4 py-2 text-[11px] font-black uppercase tracking-[0.14em] text-black">
-                РОП · Консультант
-              </div>
-            </article>
-          </aside>
         </div>
       </div>
     </section>

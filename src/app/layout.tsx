@@ -16,8 +16,16 @@ const displayFont = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "Никита Лунёв — Консалтинг по продажам",
-  description: "Построение отделов продаж, CRM, автоматизация, контроль и рост выручки.",
+  title: {
+    default: "LN — Lunyov System",
+    template: "%s | Lunyov System",
+  },
+  description:
+    "Системные отделы продаж, внедрение CRM (amo, Kommo, Bitrix), контроль и рост выручки без хаоса.",
+  icons: {
+    icon: [{ url: "/brand-logo.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/brand-logo.svg", type: "image/svg+xml" }],
+  },
 };
 
 export default function RootLayout({

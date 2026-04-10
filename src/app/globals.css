@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #090909;
-  --surface: #111111;
-  --surface-2: #181818;
-  --border: #252525;
-  --accent: #c8a96e;
-  --accent-soft: #dfbf84;
-  --accent-hover: #e0bf83;
-  --text: #f2eee6;
-  --muted: #9a968d;
+  --bg: #070707;
+  --surface: #0e0e0e;
+  --surface-2: #151515;
+  --border: #2a2a28;
+  --accent: #b89a62;
+  --accent-soft: #d4bc8a;
+  --accent-hover: #c9ae78;
+  --text: #f4f1ea;
+  --muted: #98948c;
   --danger: #ef4444;
   --success: #22c55e;
   --radius: 18px;
@@ -63,34 +63,34 @@ a {
 }
 
 .btn-primary {
-  background: linear-gradient(120deg, #c8a96e 0%, #d4b67a 100%);
-  color: #0b0b0b;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 4px;
-  padding: 16px 34px;
+  background: linear-gradient(135deg, #c4a968 0%, #a98b52 100%);
+  color: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 14px 28px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   transition:
-    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 280ms cubic-bezier(0.22, 1, 0.36, 1);
-  box-shadow: 0 12px 34px rgba(200, 169, 110, 0.22);
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 4px 24px rgba(184, 154, 98, 0.14);
 }
 
 .btn-primary:hover {
   background: var(--accent-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 18px 44px rgba(200, 169, 110, 0.33);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 40px rgba(184, 154, 98, 0.22);
 }
 
 .btn-secondary {
-  border: 1px solid rgba(200, 169, 110, 0.22);
+  border: 1px solid rgba(184, 154, 98, 0.2);
   color: var(--text);
-  background: rgba(200, 169, 110, 0.02);
+  background: rgba(184, 154, 98, 0.03);
   backdrop-filter: blur(8px);
-  border-radius: 4px;
-  padding: 16px 34px;
+  border-radius: 6px;
+  padding: 14px 28px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;

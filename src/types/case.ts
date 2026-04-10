@@ -10,4 +10,6 @@ export type CaseItem = {
   country: string;
   metrics: CaseMetric[];
   description: string;
+  /** URL или путь /public/... к логотипу компании */
+  logoSrc?: string;
 };

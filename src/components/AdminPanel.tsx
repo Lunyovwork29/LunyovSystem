@@ -12,6 +12,7 @@ type CaseDraft = {
   country: string;
   description: string;
   metricsRaw: string;
+  logoSrc: string;
 };
 
 type ArticleDraft = {
@@ -26,6 +27,7 @@ const emptyCaseDraft: CaseDraft = {
   country: "",
   description: "",
   metricsRaw: "",
+  logoSrc: "",
 };
 const emptyArticleDraft: ArticleDraft = { title: "", excerpt: "", body: "" };
 
@@ -93,18 +95,21 @@ export default function AdminPanel() {
       country: item.country,
       description: item.description,
       metricsRaw,
+      logoSrc: item.logoSrc ?? "",
     });
   };
 
   const submitCase = (event: FormEvent) => {
     event.preventDefault();
     const metrics = parseMetrics(caseDraft.metricsRaw);
+    const logoTrim = caseDraft.logoSrc.trim();
     const payload = {
       title: caseDraft.title.trim(),
       category: caseDraft.category.trim(),
       country: caseDraft.country.trim(),
       description: caseDraft.description.trim(),
       metrics,
+      logoSrc: logoTrim || undefined,
     };
     if (!payload.title || !payload.category || !payload.country || metrics.length === 0) return;
 
@@ -212,6 +217,12 @@ export default function AdminPanel() {
                     placeholder="Страна"
                     value={caseDraft.country}
                     onChange={(event) => setCaseDraft((prev) => ({ ...prev, country: event.target.value }))}
+                  />
+                  <input
+                    className="input-premium"
+                    placeholder="URL логотипа компании (необязательно)"
+                    value={caseDraft.logoSrc}
+                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, logoSrc: event.target.value }))}
                   />
                   <textarea
                     className="input-premium"
