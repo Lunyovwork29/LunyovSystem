@@ -471,13 +471,16 @@ export default function Services() {
   const [detailSlug, setDetailSlug] = useState<string | null>(null);
 
   return (
-    <section id="services" className="border-t border-[var(--border)] py-[100px] md:px-6">
+    <section
+      id="services"
+      className="border-t border-[var(--border)] scroll-mt-24 pt-36 pb-20 md:px-6 md:py-[100px]"
+    >
       <div className="container-site">
         <header className="mb-14 md:mb-[60px]">
-          <div className="mb-4 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+          <div className="mb-5 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)] max-md:mb-6">
             amoCRM
           </div>
-          <h2 className="font-[family-name:var(--font-display)] text-[clamp(2.5rem,6vw,4.5rem)] font-normal uppercase leading-[0.95] tracking-[0.02em] text-[var(--text)]">
+          <h2 className="font-[family-name:var(--font-display)] text-[clamp(2.5rem,6vw,4.5rem)] font-normal uppercase leading-[0.95] tracking-[0.02em] text-[var(--text)] max-md:mt-1">
             Продуктовая линейка
           </h2>
           <div className="mt-6 h-0.5 w-[60px] bg-[var(--accent)]" />

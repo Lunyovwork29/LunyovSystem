@@ -15,13 +15,15 @@ export default function Navbar() {
         <a
           href="#hero"
           className="group relative z-10 shrink-0 outline-none transition-opacity hover:opacity-90"
+          aria-label="На главную"
         >
-          <span className="relative block h-9 w-[min(100%,200px)] md:h-11 md:w-[220px]">
+          <span className="brand-logo-wrap relative block h-9 w-[104px] overflow-hidden p-1 sm:w-[128px] md:h-11 md:w-[188px] md:p-1.5">
             <Image
               src="/brand-logo.png"
-              alt="Lunyov System"
+              alt="LN — системные продажи"
               fill
-              className="object-contain object-left"
+              sizes="(max-width: 640px) 104px, 188px"
+              className="brand-logo-img object-contain object-left"
               priority
             />
           </span>

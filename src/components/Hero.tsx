@@ -13,7 +13,7 @@ export default function Hero() {
       <div className="container-site relative z-10">
         <div className="mx-auto max-w-4xl text-center md:text-left">
           <p className="fade-up stagger-1 mb-6 inline-block text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
-            Lunyov System · системные продажи
+            Системные продажи
           </p>
 
           <h1 className="fade-up stagger-2 font-[family-name:var(--font-display)] text-[clamp(1.85rem,5vw,3.35rem)] font-semibold leading-[1.08] tracking-tight text-[var(--text)] md:max-w-none">

@@ -17,7 +17,7 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const message = `Новая заявка с сайта Lunyov System:
+    const message = `Новая заявка с сайта lunyovsystem.ru:
 
 Имя: ${form.name}
 Телефон: ${form.phone}
