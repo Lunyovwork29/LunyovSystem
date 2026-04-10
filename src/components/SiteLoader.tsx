@@ -40,8 +40,8 @@ export default function SiteLoader() {
       aria-label="Загрузка"
     >
       <div className="flex flex-col items-center gap-5">
-        <div className="relative h-14 w-[120px]">
-          <Image src="/brand-logo.svg" alt="" fill className="object-contain object-left" priority />
+        <div className="relative mx-auto h-16 w-[200px] md:h-[72px] md:w-[240px]">
+          <Image src="/brand-logo.png" alt="" fill className="object-contain object-center" priority />
         </div>
         <div className="h-0.5 w-24 overflow-hidden rounded-full bg-[var(--border)]">
           <div className="h-full w-1/2 animate-pulse rounded-full bg-[var(--accent)]" />

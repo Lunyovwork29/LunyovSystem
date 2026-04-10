@@ -12,21 +12,15 @@ export default function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-[var(--border)]/60 bg-[rgba(6,6,6,0.88)] backdrop-blur-xl supports-[backdrop-filter]:bg-[rgba(6,6,6,0.82)]">
       <nav className="container-site flex h-[72px] items-center justify-between md:h-20">
-        <a href="#hero" className="group flex items-center gap-3 outline-none transition-opacity hover:opacity-90">
-          <span className="relative h-9 w-[108px] shrink-0 md:h-10 md:w-[120px]">
+        <a href="#hero" className="group outline-none transition-opacity hover:opacity-90">
+          <span className="relative block h-9 w-[min(100%,200px)] shrink-0 md:h-11 md:w-[220px]">
             <Image
-              src="/brand-logo.svg"
-              alt="LN — Lunyov System"
+              src="/brand-logo.png"
+              alt="Lunyov System"
               fill
               className="object-contain object-left"
               priority
             />
-          </span>
-          <span className="hidden flex-col leading-tight sm:flex">
-            <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--accent)]">LN</span>
-            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
-              Lunyov System
-            </span>
           </span>
         </a>
 

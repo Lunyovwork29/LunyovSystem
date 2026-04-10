@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   description:
     "Системные отделы продаж, внедрение CRM (amo, Kommo, Bitrix), контроль и рост выручки без хаоса.",
   icons: {
-    icon: [{ url: "/brand-logo.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/brand-logo.svg", type: "image/svg+xml" }],
+    icon: [{ url: "/brand-logo.png", type: "image/png" }],
+    apple: [{ url: "/brand-logo.png", type: "image/png" }],
   },
 };
 
