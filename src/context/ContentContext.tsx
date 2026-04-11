@@ -35,6 +35,8 @@ type ContentContextType = {
  * `CASES_BUILD_ID` в cases.mock — при смене каталога в коде увеличить, чтобы сбросить кэш клиентов.
  */
 const STORAGE_CASES = "lunev_cases_bundle";
+/** Старые форматы — удаляем при старте, чтобы не мешали после обновления JS */
+const LEGACY_CASE_KEYS = ["lunev_cases_v3", "lunev_cases_v4"] as const;
 const STORAGE_CASES_V1 = "lunev_cases_v1";
 const STORAGE_ARTICLES = "lunev_articles_v1";
 
@@ -117,7 +119,20 @@ function parseCasesFromStorage(): CaseItem[] | null {
   return parsed.length > 0 ? parsed : null;
 }
 
+function clearLegacyCaseKeys() {
+  if (typeof window === "undefined") return;
+  for (const key of LEGACY_CASE_KEYS) {
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
 function normalizeStoredCases(): CaseItem[] {
+  clearLegacyCaseKeys();
+
   const fromBundle = parseCasesFromStorage();
   if (fromBundle) return fromBundle;
 

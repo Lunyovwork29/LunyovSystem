@@ -4,7 +4,7 @@ import type { CaseItem } from "@/types/case";
  * Увеличивайте при смене дефолтного списка кейсов — клиенты со старым localStorage получат новый каталог.
  * Логотипы: `public/cases/logos/*.png` → `logoSrc: "/cases/logos/..."`.
  */
-export const CASES_BUILD_ID = 4;
+export const CASES_BUILD_ID = 5;
 
 export const MOCK_CASES: CaseItem[] = [
   {
