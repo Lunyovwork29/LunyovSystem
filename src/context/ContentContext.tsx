@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { MOCK_CASES } from "@/data/cases.mock";
+import { CASES_BUILD_ID, MOCK_CASES } from "@/data/cases.mock";
 import type { CaseItem } from "@/types/case";
 
 export type { CaseItem } from "@/types/case";
@@ -29,8 +29,12 @@ type ContentContextType = {
   deleteArticle: (id: string) => void;
 };
 
-/** v4 — новый ключ: пустое хранилище подтянет MOCK из репозитория (v3 с тестовыми кейсами больше не читается). */
-const STORAGE_CASES_V4 = "lunev_cases_v4";
+/**
+ * Кейсы в localStorage: только объект `{ buildId, cases }`.
+ * Старые plain-массивы (v3/v4) не читаем — иначе тестовые 3 карточки перекрывали мок из репозитория.
+ * `CASES_BUILD_ID` в cases.mock — при смене каталога в коде увеличить, чтобы сбросить кэш клиентов.
+ */
+const STORAGE_CASES = "lunev_cases_bundle";
 const STORAGE_CASES_V1 = "lunev_cases_v1";
 const STORAGE_ARTICLES = "lunev_articles_v1";
 
@@ -101,12 +105,21 @@ function migrateFromV1(raw: LegacyCaseV1): CaseItem {
   };
 }
 
+type CasesEnvelope = { buildId: number; cases: unknown[] };
+
+function parseCasesFromStorage(): CaseItem[] | null {
+  const raw = parseStorage<unknown>(STORAGE_CASES, null);
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const env = raw as CasesEnvelope;
+  if (typeof env.buildId !== "number" || !Array.isArray(env.cases)) return null;
+  if (env.buildId !== CASES_BUILD_ID) return null;
+  const parsed = env.cases.filter(isCaseItemV2);
+  return parsed.length > 0 ? parsed : null;
+}
+
 function normalizeStoredCases(): CaseItem[] {
-  const v4 = parseStorage<unknown[] | null>(STORAGE_CASES_V4, null);
-  if (Array.isArray(v4) && v4.length > 0) {
-    const parsed = v4.filter(isCaseItemV2);
-    if (parsed.length > 0) return parsed;
-  }
+  const fromBundle = parseCasesFromStorage();
+  if (fromBundle) return fromBundle;
 
   const v1 = parseStorage<LegacyCaseV1[] | null>(STORAGE_CASES_V1, null);
   if (Array.isArray(v1) && v1.length > 0) {
@@ -132,7 +145,8 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (storageReady && typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_CASES_V4, JSON.stringify(cases));
+      const envelope: CasesEnvelope = { buildId: CASES_BUILD_ID, cases };
+      window.localStorage.setItem(STORAGE_CASES, JSON.stringify(envelope));
     }
   }, [cases, storageReady]);
 
