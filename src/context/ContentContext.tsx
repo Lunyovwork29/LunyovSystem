@@ -29,7 +29,8 @@ type ContentContextType = {
   deleteArticle: (id: string) => void;
 };
 
-const STORAGE_CASES_V2 = "lunev_cases_v2";
+/** v3 — новый набор кейсов с логотипами; v2 не читаем, чтобы не затирать мок старым localStorage */
+const STORAGE_CASES_V3 = "lunev_cases_v3";
 const STORAGE_CASES_V1 = "lunev_cases_v1";
 const STORAGE_ARTICLES = "lunev_articles_v1";
 
@@ -101,9 +102,9 @@ function migrateFromV1(raw: LegacyCaseV1): CaseItem {
 }
 
 function normalizeStoredCases(): CaseItem[] {
-  const v2 = parseStorage<unknown[] | null>(STORAGE_CASES_V2, null);
-  if (Array.isArray(v2) && v2.length > 0) {
-    const parsed = v2.filter(isCaseItemV2);
+  const v3 = parseStorage<unknown[] | null>(STORAGE_CASES_V3, null);
+  if (Array.isArray(v3) && v3.length > 0) {
+    const parsed = v3.filter(isCaseItemV2);
     if (parsed.length > 0) return parsed;
   }
 
@@ -131,7 +132,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (storageReady && typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_CASES_V2, JSON.stringify(cases));
+      window.localStorage.setItem(STORAGE_CASES_V3, JSON.stringify(cases));
     }
   }, [cases, storageReady]);
 

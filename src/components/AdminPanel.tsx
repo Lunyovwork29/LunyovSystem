@@ -218,12 +218,23 @@ export default function AdminPanel() {
                     value={caseDraft.country}
                     onChange={(event) => setCaseDraft((prev) => ({ ...prev, country: event.target.value }))}
                   />
-                  <input
-                    className="input-premium"
-                    placeholder="URL логотипа компании (необязательно)"
-                    value={caseDraft.logoSrc}
-                    onChange={(event) => setCaseDraft((prev) => ({ ...prev, logoSrc: event.target.value }))}
-                  />
+                  <div>
+                    <input
+                      className="input-premium"
+                      placeholder="/cases/logos/case-1.png"
+                      value={caseDraft.logoSrc}
+                      onChange={(event) => setCaseDraft((prev) => ({ ...prev, logoSrc: event.target.value }))}
+                      aria-describedby="case-logo-hint"
+                    />
+                    <p id="case-logo-hint" className="mt-1.5 text-[11px] leading-snug text-[var(--muted)]">
+                      PNG в репозитории: положите в{" "}
+                      <code className="rounded bg-[var(--surface-2)] px-1 text-[var(--accent-soft)]">
+                        public/cases/logos/
+                      </code>
+                      , здесь укажите путь с ведущим слэшем, например{" "}
+                      <code className="rounded bg-[var(--surface-2)] px-1">/cases/logos/staleks.png</code>.
+                    </p>
+                  </div>
                   <textarea
                     className="input-premium"
                     placeholder="Метрики: строка — значение (×1.8) или подпись: значение (рост: +35%)"
