@@ -29,8 +29,8 @@ type ContentContextType = {
   deleteArticle: (id: string) => void;
 };
 
-/** v3 — новый набор кейсов с логотипами; v2 не читаем, чтобы не затирать мок старым localStorage */
-const STORAGE_CASES_V3 = "lunev_cases_v3";
+/** v4 — новый ключ: пустое хранилище подтянет MOCK из репозитория (v3 с тестовыми кейсами больше не читается). */
+const STORAGE_CASES_V4 = "lunev_cases_v4";
 const STORAGE_CASES_V1 = "lunev_cases_v1";
 const STORAGE_ARTICLES = "lunev_articles_v1";
 
@@ -102,9 +102,9 @@ function migrateFromV1(raw: LegacyCaseV1): CaseItem {
 }
 
 function normalizeStoredCases(): CaseItem[] {
-  const v3 = parseStorage<unknown[] | null>(STORAGE_CASES_V3, null);
-  if (Array.isArray(v3) && v3.length > 0) {
-    const parsed = v3.filter(isCaseItemV2);
+  const v4 = parseStorage<unknown[] | null>(STORAGE_CASES_V4, null);
+  if (Array.isArray(v4) && v4.length > 0) {
+    const parsed = v4.filter(isCaseItemV2);
     if (parsed.length > 0) return parsed;
   }
 
@@ -132,7 +132,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (storageReady && typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_CASES_V3, JSON.stringify(cases));
+      window.localStorage.setItem(STORAGE_CASES_V4, JSON.stringify(cases));
     }
   }, [cases, storageReady]);
 
