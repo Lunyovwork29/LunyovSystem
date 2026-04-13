@@ -26,11 +26,13 @@ function LogoRow() {
 
 export default function LogoMarquee() {
   return (
-    <section className="border-y border-[var(--border)] bg-[var(--surface)]/75 py-5 md:py-6">
+    <section className="border-y border-[var(--border)] bg-[var(--bg)] py-4 md:py-5">
       <div className="container-site">
-        <div className="logo-marquee-shell">
-          <LogoRow />
-          <LogoRow />
+        <div className="logo-marquee-panel">
+          <div className="logo-marquee-shell">
+            <LogoRow />
+            <LogoRow />
+          </div>
         </div>
       </div>
     </section>

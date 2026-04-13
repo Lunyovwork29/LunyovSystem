@@ -199,52 +199,49 @@ a {
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
 }
 
+.logo-marquee-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(186, 186, 186, 0.14), rgba(145, 145, 145, 0.09));
+  padding: 22px 0;
+}
+
 .logo-marquee-shell {
   position: relative;
   display: flex;
   width: 100%;
   overflow: hidden;
-  mask-image: linear-gradient(to right, transparent 0%, black 9%, black 91%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 
 .logo-marquee-track {
   display: flex;
   min-width: max-content;
   align-items: center;
-  gap: 18px;
-  animation: logoMarquee 34s linear infinite;
-  padding-right: 18px;
+  gap: 44px;
+  animation: logoMarquee 36s linear infinite;
+  padding-right: 44px;
 }
 
 .logo-marquee-item {
-  height: 54px;
-  width: 170px;
+  height: 46px;
+  width: auto;
   flex: 0 0 auto;
-  border: 1px solid rgba(184, 154, 98, 0.18);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 220ms ease, background-color 220ms ease, transform 220ms ease;
-}
-
-.logo-marquee-item:hover {
-  border-color: rgba(184, 154, 98, 0.4);
-  background: rgba(184, 154, 98, 0.08);
-  transform: translateY(-1px);
 }
 
 .logo-marquee-image {
   width: auto;
-  max-width: 76%;
-  max-height: 24px;
+  max-width: 165px;
+  max-height: 34px;
   object-fit: contain;
-  filter: grayscale(1) opacity(0.84) contrast(0.94);
-  transition: filter 220ms ease;
+  filter: grayscale(1) brightness(1.6) opacity(0.74) contrast(0.9);
+  transition: filter 260ms ease, opacity 260ms ease;
 }
 
 .logo-marquee-item:hover .logo-marquee-image {
-  filter: grayscale(0.15) opacity(1) contrast(1);
+  filter: grayscale(0.25) brightness(1.75) opacity(0.98) contrast(1);
 }
 
 @keyframes logoMarquee {
@@ -366,13 +363,22 @@ textarea.input-premium {
 }
 
 @media (max-width: 768px) {
+  .logo-marquee-panel {
+    padding: 16px 0;
+  }
+
+  .logo-marquee-track {
+    gap: 26px;
+    padding-right: 26px;
+  }
+
   .logo-marquee-item {
-    width: 136px;
-    height: 48px;
+    height: 40px;
   }
 
   .logo-marquee-image {
-    max-height: 21px;
+    max-width: 120px;
+    max-height: 28px;
   }
 
   .photo-shell,
