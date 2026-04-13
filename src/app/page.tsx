@@ -1,4 +1,5 @@
 import Hero from "@/components/Hero";
+import LogoMarquee from "@/components/LogoMarquee";
 import TrustStats from "@/components/TrustStats";
 import Cases from "@/components/Cases";
 import Services from "@/components/Services";
@@ -14,6 +15,7 @@ export default function Home() {
       <SiteLoader />
       <main className="min-h-screen bg-[var(--bg)] text-[var(--text)]">
         <Hero />
+        <LogoMarquee />
         <TrustStats />
         <Cases />
         <Services />
