@@ -32,7 +32,7 @@ export default function TrustStats() {
                   <span className="text-[0.55em] font-semibold text-[var(--accent-soft)]"> {item.unit}</span>
                 ) : null}
               </div>
-              <p className="mt-3 text-[12px] font-medium leading-snug tracking-[0.02em] text-[var(--muted)]">
+              <p className="mx-auto mt-3 max-w-[18ch] text-balance text-[12px] font-medium leading-[1.45] tracking-[0.01em] text-[var(--muted)]">
                 {item.label}
               </p>
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useContent } from "@/context/ContentContext";
 
 const ADMIN_LOGIN = "admin";
@@ -69,8 +69,14 @@ export default function AdminPanel() {
     [articles]
   );
 
-  const openEditor = () => setOpen(true);
   const closeEditor = () => setOpen(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hasAdminAccess =
+      window.location.search.includes("admin=1") || window.location.hash.toLowerCase() === "#admin";
+    if (hasAdminAccess) setOpen(true);
+  }, []);
 
   const handleLogin = (event: FormEvent) => {
     event.preventDefault();
@@ -149,14 +155,6 @@ export default function AdminPanel() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={openEditor}
-        className="fixed bottom-6 left-6 z-40 rounded border border-[rgba(200,169,110,0.35)] bg-[rgba(9,9,9,0.82)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--accent)] backdrop-blur-md transition hover:border-[var(--accent)] hover:bg-[rgba(200,169,110,0.1)]"
-      >
-        Admin
-      </button>
-
       <div className={`fixed inset-0 z-[70] ${open ? "" : "pointer-events-none"}`}>
         <div
           onClick={closeEditor}
