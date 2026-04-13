@@ -14,21 +14,18 @@ export default function Navbar() {
       <nav className="container-site relative flex h-[72px] items-center justify-between md:h-20">
         <a
           href="#hero"
-          className="group relative z-10 flex min-w-0 shrink-0 items-center gap-2.5 outline-none transition-opacity hover:opacity-90 sm:gap-3"
+          className="group relative z-10 flex min-w-0 shrink-0 items-center outline-none transition-opacity hover:opacity-90"
           aria-label="LN Systems — на главную"
         >
-          <span className="relative block h-9 w-[132px] shrink-0 md:h-11 md:w-[158px]">
+          <span className="relative block h-9 w-9 shrink-0 md:h-10 md:w-10">
             <Image
-              src="/brand-logo.png"
-              alt=""
+              src="/favicon.png"
+              alt="LN Systems"
               fill
-              sizes="158px"
-              className="object-contain object-left drop-shadow-[0_0_14px_rgba(184,154,98,0.22)]"
+              sizes="40px"
+              className="object-contain drop-shadow-[0_0_14px_rgba(184,154,98,0.22)]"
               priority
             />
-          </span>
-          <span className="hidden min-w-0 truncate font-[family-name:var(--font-display)] text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--text)] sm:inline md:text-[11px]">
-            LN Systems
           </span>
         </a>
 

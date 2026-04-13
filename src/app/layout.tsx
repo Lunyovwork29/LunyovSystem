@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, Sora } from "next/font/google";
+import { Inter, Manrope } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import { ContentProvider } from "@/context/ContentContext";
 
 const bodyFont = Inter({
   variable: "--font-body",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const displayFont = Sora({
+const displayFont = Manrope({
   variable: "--font-display",
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "600", "700", "800"],
+  subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
+  weight: ["500", "600", "700", "800"],
 });
 
 const ICON_CACHE = "9";
