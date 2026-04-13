@@ -202,7 +202,7 @@ a {
 .logo-marquee-panel {
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: linear-gradient(180deg, rgba(186, 186, 186, 0.14), rgba(145, 145, 145, 0.09));
-  padding: 22px 0;
+  padding: 26px 0;
 }
 
 .logo-marquee-shell {
@@ -217,13 +217,13 @@ a {
   display: flex;
   min-width: max-content;
   align-items: center;
-  gap: 44px;
+  gap: 54px;
   animation: logoMarquee 36s linear infinite;
-  padding-right: 44px;
+  padding-right: 54px;
 }
 
 .logo-marquee-item {
-  height: 46px;
+  height: 58px;
   width: auto;
   flex: 0 0 auto;
   display: flex;
@@ -233,8 +233,8 @@ a {
 
 .logo-marquee-image {
   width: auto;
-  max-width: 165px;
-  max-height: 34px;
+  max-width: 220px;
+  max-height: 52px;
   object-fit: contain;
   filter: grayscale(1) brightness(1.6) opacity(0.74) contrast(0.9);
   transition: filter 260ms ease, opacity 260ms ease;
@@ -364,21 +364,21 @@ textarea.input-premium {
 
 @media (max-width: 768px) {
   .logo-marquee-panel {
-    padding: 16px 0;
+    padding: 18px 0;
   }
 
   .logo-marquee-track {
-    gap: 26px;
-    padding-right: 26px;
+    gap: 30px;
+    padding-right: 30px;
   }
 
   .logo-marquee-item {
-    height: 40px;
+    height: 48px;
   }
 
   .logo-marquee-image {
-    max-width: 120px;
-    max-height: 28px;
+    max-width: 150px;
+    max-height: 38px;
   }
 
   .photo-shell,

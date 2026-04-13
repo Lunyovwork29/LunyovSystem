@@ -1,13 +1,14 @@
 const COMPANY_LOGOS = [
-  { src: "/cases/logos/mzo.png", alt: "MZO" },
-  { src: "/cases/logos/mebelvsem.png", alt: "Мебель Всем" },
-  { src: "/cases/logos/globalvision.png", alt: "Global Vision" },
-  { src: "/cases/logos/royalcatering.png", alt: "Royal Catering" },
-  { src: "/cases/logos/success.png", alt: "Success HoReCa" },
-  { src: "/cases/logos/aulandi.png", alt: "Aulandi" },
-  { src: "/cases/logos/bast.png", alt: "Bast Transform" },
-  { src: "/cases/logos/staleks.png", alt: "Staleks" },
-  { src: "/cases/logos/tumarcarpets.png", alt: "Tumar Carpets" },
+  { src: "/cases/logos/aulandilogo.png", alt: "Aulandi" },
+  { src: "/cases/logos/bastlogo.png", alt: "Bast Transform" },
+  { src: "/cases/logos/globalvisionlogo.png", alt: "Global Vision" },
+  { src: "/cases/logos/mebelvsemlogo.png", alt: "Мебель Всем" },
+  { src: "/cases/logos/mzologo.png", alt: "MZO" },
+  { src: "/cases/logos/profisoftlogo.png", alt: "Profisoft" },
+  { src: "/cases/logos/royalcateringlogo.png", alt: "Royal Catering" },
+  { src: "/cases/logos/stalekslogo.png", alt: "Staleks" },
+  { src: "/cases/logos/successlogo.png", alt: "Success HoReCa" },
+  { src: "/cases/logos/tumarcarpetslogo.png", alt: "Tumar Carpets" },
 ];
 
 function LogoRow() {
